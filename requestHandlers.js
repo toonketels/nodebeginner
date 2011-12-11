@@ -12,14 +12,13 @@ function start( response, postData ) {
   body += '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'
   body += '</head>';
   body += '<body>';
-  body += '<form action="/upload" method="post">';
-  body += '<textarea name="text" rows"20" cols="60"></textarea>';
-  body += '<input type="submit" value="Submit text" />';
+  body += '<form action="/upload" enctype="multipart/form-data" method="post">';
+  // Changed text to file input type
+  body += '<input type="file" name="upload" />';
+  body += '<input type="submit" value="Upload file" />';
   body += '</form>'
   body += '</body>';
   body += '</html>';
-
-  console.log( formidable );
 
   response.writeHead(200, {"Content-Type": "text/html"});
   response.write(body);
