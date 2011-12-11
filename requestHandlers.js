@@ -3,24 +3,21 @@
 // This is retuned to the rooter, which returns it to server
 // which will use it to set the body of the response
 
+// Node module to create non blocking child process (on diff threat?).
+// Exec function allows us the executre bash commands.
+var exec = require("child_process").exec;
+
 function start() {
   console.log( "Request handler 'start' was called." );
+  var content = "empty";
   
-  // Some blocking functionality.
-  // This keeps the requesthandler buzy and form responding
-  // till 10 seconds passed.
-  // In real life, this might be some computation
-  function sleep(milliSeconds) {
-    var startTime = new Date().getTime();
-    while (new Date().getTime < startTime + milliSeconds);
-    console.log('sleeping');
-  }
+  exec("ls -lah", function (error, stdout, stderr) {
+    content = stdout;
+  });
   
-  console.log('About to call sleep');
-  sleep(100000);
-  console.log('Actually called sleep');
-  console.log('About to return text');
-  return "Hello world";
+  // Still returns empty, because exec is still calculating on diff treath
+  // and the content of content is still "empty".
+  return content;
 }
 
 function upload() {
