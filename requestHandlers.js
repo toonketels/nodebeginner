@@ -1,6 +1,7 @@
-// Add querystring module to get the "text" from the body
-// of the post request.
 var querystring = require("querystring");
+// Add File System module.
+var fs = require( "fs" );
+
 
 function start( response, postData ) {
   console.log( "Request handler 'start' was called." );
@@ -18,10 +19,12 @@ function start( response, postData ) {
   body += '</body>';
   body += '</html>';
 
+  console.log( formidable );
+
   response.writeHead(200, {"Content-Type": "text/html"});
   response.write(body);
   response.end();
-
+  
 }
 
 function upload( response, postData ) {
@@ -33,5 +36,27 @@ function upload( response, postData ) {
   response.end();  
 }
 
+// Add show requestfunction which will display
+// a png file named nodejs.png from /tmp folder.
+function show( response, postData ) {
+  console.log( "Request handerl 'show' was called." );
+  // Async file handling, we pass a callback function which will
+  // be executed when file is read
+  fs.readFile( '/tmp/nodejs.png', 'binary', function( error, file ) {
+    if( error ) {
+      console.log( 'Error occured: ' + error );
+      response.writeHead( 500, { 'Content-Type': 'text/plain' });
+      response.write( error, '\n' );
+      response.end();
+    } else {
+      console.log( "File is being displayed" );
+      response.writeHead( 200, { 'Content-Type': 'image/png' } );
+      response.write( file, 'binary' );
+      response.end();
+    }
+  });
+}
+
 exports.start = start;
 exports.upload = upload;
+exports.show = show;
