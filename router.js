@@ -1,11 +1,12 @@
-// Add the postData as an argument and pass it through to the requestHandler
+// Router now accepts request instead of postData as an argument
+// and passes it to the requesthandler.
 
-function route( handle, pathname, response, postData) {
+function route( handle, pathname, response, request) {
   console.log( "About to route a request for " + pathname );
   
   if(typeof handle[pathname] === 'function') {
-    // Pass postData to requestHandler
-    return handle[pathname](response, postData);
+    // Pass  request to requestHandler
+    return handle[pathname](response, request);
   } else {
     console.log( "No request handler found for " + pathname );
     
@@ -13,7 +14,6 @@ function route( handle, pathname, response, postData) {
     response.write("404 Not Found");
     response.end();
   }
-
 }
 
 exports.route = route;

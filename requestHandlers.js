@@ -1,19 +1,18 @@
 var querystring = require("querystring");
-// Add File System module.
 var fs = require( "fs" );
+// Add the formidable module
+var formidable = require( "formidable" );
 
-
-function start( response, postData ) {
+// Accept request as argument
+function start( response, request ) {
   console.log( "Request handler 'start' was called." );
   
-  // Create html form
   var body= '<html>';
   body += '<head>';
   body += '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'
   body += '</head>';
   body += '<body>';
   body += '<form action="/upload" enctype="multipart/form-data" method="post">';
-  // Changed text to file input type
   body += '<input type="file" name="upload" />';
   body += '<input type="submit" value="Upload file" />';
   body += '</form>'
@@ -26,22 +25,34 @@ function start( response, postData ) {
   
 }
 
-function upload( response, postData ) {
+// Update the upload handling using formidable.
+function upload( response, request ) {
   console.log( "Request handler 'upload' was called." );
   
-  response.writeHead(200, {"Content-Type": "text/plain"});
-  // Only display the post data "text" not the entire body.
-  response.write( "You've send: " + querystring.parse(postData).text );
-  response.end();  
+  // Use formidable, IncomingForm is constructor function.
+  var form = new formidable.IncomingForm();
+  console.log( 'About to parse' );
+  // Parse the request
+  form.parse( request, function( error, fields, files ) {
+    console.log( 'Parsing done' );
+    // Rename file in a synchronous way - doesn't take much time so
+    // allowed to be blocking.
+    // A async function is also available.
+    fs.renameSync( files.upload.path, '/tmp/test.png' );
+    
+    // Create the response
+    response.writeHead( 200, { "Content-Type": "text/html" } );
+    response.write( 'Received image: <br />' );
+    // We use our show show route to display the image.
+    response.write( '<img src="/show" />' );
+    response.end();
+  }); 
 }
 
-// Add show requestfunction which will display
-// a png file named nodejs.png from /tmp folder.
-function show( response, postData ) {
-  console.log( "Request handerl 'show' was called." );
-  // Async file handling, we pass a callback function which will
-  // be executed when file is read
-  fs.readFile( '/tmp/nodejs.png', 'binary', function( error, file ) {
+function show( response, request ) {
+  console.log( "Request hander 'show' was called." );
+  // Always show the test file.
+  fs.readFile( '/tmp/test.png', 'binary', function( error, file ) {
     if( error ) {
       console.log( 'Error occured: ' + error );
       response.writeHead( 500, { 'Content-Type': 'text/plain' });
