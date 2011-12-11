@@ -11,10 +11,12 @@ function start(response) {
   
   // Callboack of exec is called async, which is why it gets skipped.
   // We need to let it excecute the response itself in its callback function.
-  exec("ls -alh", function (error, stdout, stderr) {
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    response.write(stdout);
-    response.end();
+  exec("find /",
+       { timeout: 10000, maxBuffer: 20000*1024},
+       function (error, stdout, stderr) {
+        response.writeHead(200, {"Content-Type": "text/plain"});
+        response.write(stdout);
+        response.end();
   });
   
   // We no longer need to return anything.
