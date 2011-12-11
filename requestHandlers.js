@@ -1,25 +1,27 @@
-// Node module to create non blocking child process (on diff threat?).
-// Exec function allows us the executre bash commands.
-var exec = require("child_process").exec;
+// Would be better to not dump content in request handler,
+// but instead pass it to a controller with views and models
 
-
-// RequestHandlers now accept response object and will call
-// it's methods when ready to respond (in callbacks).
 function start(response) {
   console.log( "Request handler 'start' was called." );
-  var content = "empty";
   
-  // Callboack of exec is called async, which is why it gets skipped.
-  // We need to let it excecute the response itself in its callback function.
-  exec("find /",
-       { timeout: 10000, maxBuffer: 20000*1024},
-       function (error, stdout, stderr) {
-        response.writeHead(200, {"Content-Type": "text/plain"});
-        response.write(stdout);
-        response.end();
-  });
+  // Create html form
+  var body= '<html>';
+  body += '<head>';
+  body += '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'
+  body += '</head>';
+  body += '<body>';
+  body += '<form action="/upload" method="post">';
+  body += '<textarea name="text" rows"20" cols="60"></textarea>';
+  body += '<input type="submit" value="Submit text" />';
+  body += '</form>'
+  body += '</body>';
+  body += '</html>';
   
-  // We no longer need to return anything.
+  // Send response
+  response.writeHead(200, {"Content-Type": "text/html"});
+  response.write(body);
+  response.end();
+
 }
 
 function upload(response) {
