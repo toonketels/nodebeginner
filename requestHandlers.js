@@ -1,7 +1,7 @@
-// Would be better to not dump content in request handler,
-// but instead pass it to a controller with views and models
+// Accept the postData as an argument to make it available
+// to our request handler.
 
-function start(response) {
+function start( response, postData ) {
   console.log( "Request handler 'start' was called." );
   
   // Create html form
@@ -24,11 +24,14 @@ function start(response) {
 
 }
 
-function upload(response) {
+function upload( response, postData ) {
   console.log( "Request handler 'upload' was called." );
   
   response.writeHead(200, {"Content-Type": "text/plain"});
-  response.write("Upload I tell you");
+  // Display the posted data on the page.
+  // In real life, only display the stuff that we need,
+  // not the entire body of the post request.
+  response.write( "You've send: " + postData );
   response.end();  
 }
 
