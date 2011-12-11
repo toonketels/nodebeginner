@@ -6,11 +6,11 @@ function start( route, handle ) {
     var pathname = url.parse(request.url).pathname;
     console.log("Request for " + pathname + " received.");
     
-    var message = route( handle, pathname );
-
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    response.write(message);
-    response.end();
+    // We pass the response object to the router,
+    // it will pass it to the request handler.
+    // Request handler will call the response methods directly
+    // in it's callback functions.
+    route( handle, pathname, response );
   }
   
   http.createServer(onRequest).listen(8888);
