@@ -1,5 +1,6 @@
-// Accept the postData as an argument to make it available
-// to our request handler.
+// Add querystring module to get the "text" from the body
+// of the post request.
+var querystring = require("querystring");
 
 function start( response, postData ) {
   console.log( "Request handler 'start' was called." );
@@ -16,8 +17,7 @@ function start( response, postData ) {
   body += '</form>'
   body += '</body>';
   body += '</html>';
-  
-  // Send response
+
   response.writeHead(200, {"Content-Type": "text/html"});
   response.write(body);
   response.end();
@@ -28,10 +28,8 @@ function upload( response, postData ) {
   console.log( "Request handler 'upload' was called." );
   
   response.writeHead(200, {"Content-Type": "text/plain"});
-  // Display the posted data on the page.
-  // In real life, only display the stuff that we need,
-  // not the entire body of the post request.
-  response.write( "You've send: " + postData );
+  // Only display the post data "text" not the entire body.
+  response.write( "You've send: " + querystring.parse(postData).text );
   response.end();  
 }
 
